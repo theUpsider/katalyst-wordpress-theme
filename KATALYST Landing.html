@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<title>KATALYST — Hochschullehre mit KI. Nutzbar. Fair. Zukunftsfähig.</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/logo-light.png">
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg-2:#F7F7F5;
+    --bg-3:#EFEFEC;
+    --ink:#0F1115;
+    --ink-2:#4B5260;
+    --ink-3:#8A8F99;
+    --line:#E2E4E8;
+    --blue:#354B8A;
+    --blue-d:#243460;
+    --blue-l:#587BDF;
+    --green:#09814A;
+    --green-d:#066139;
+    --accent: var(--blue);
+    --accent-d: var(--blue-d);
+    --radius:10px;
+    --max: 1360px;
+    --pad: clamp(20px, 4vw, 64px);
+    --ease: cubic-bezier(.2,.7,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    font-size:16px;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:color-mix(in oklab, var(--accent) 35%, white);color:var(--ink);}
+
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);}
+  a{color:inherit;text-decoration:none}
+
+  /* ===================== NAV ===================== */
+  .nav{
+    position:sticky;top:0;z-index:50;background:rgba(255,255,255,.78);backdrop-filter:saturate(1.2) blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:var(--max);margin:0 auto;padding:14px var(--pad);
+    display:flex;align-items:center;gap:32px;
+  }
+  .brand{display:flex;align-items:center;gap:12px;font-weight:600;letter-spacing:.14em;font-size:15px;}
+  .brand .logo{
+    width:34px;height:34px;display:grid;grid-template-columns:1fr 1fr;gap:3px;
+  }
+  .brand .logo > div{border-radius:3px}
+  .brand .logo .s1{background:var(--ink-3)}
+  .brand .logo .s2{background:var(--blue)}
+  .brand .logo .s3{background:var(--green)}
+  .brand .logo .s4{background:var(--ink-3)}
+  .nav-menu{display:flex;gap:28px;font-size:14px;color:var(--ink-2);}
+  .nav-menu a{position:relative;padding:4px 0;transition:color .2s var(--ease)}
+  .nav-menu a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1.5px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .3s var(--ease)}
+  .nav-menu a:hover{color:var(--ink)}
+  .nav-menu a:hover::after{transform:scaleX(1)}
+  .nav-right{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:14px;color:var(--ink-2);}
+  .nav-right .lang{display:flex;gap:2px;}
+  .nav-right .lang span{padding:2px 6px;border-radius:5px;cursor:pointer;}
+  .nav-right .lang span.on{background:var(--ink);color:white;}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:'Space Grotesk';font-weight:500;font-size:14px;
+    padding:10px 18px;border-radius:999px;
+    border:1px solid var(--line);background:white;color:var(--ink);
+    cursor:pointer;transition:all .2s var(--ease);
+    white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--ink);transform:translateY(-1px)}
+  .btn.primary{background:var(--ink);color:white;border-color:var(--ink);}
+  .btn.primary:hover{background:var(--accent);border-color:var(--accent);}
+  .btn .arr{transition:transform .25s var(--ease)}
+  .btn:hover .arr{transform:translateX(3px)}
+
+  /* ===================== HERO ===================== */
+  .hero{
+    position:relative;overflow:hidden;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-grid{
+    max-width:var(--max);margin:0 auto;
+    padding:clamp(40px,7vw,96px) var(--pad) clamp(60px,8vw,120px);
+    display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(32px,5vw,72px);align-items:center;
+  }
+  body.grid-on .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:
+      linear-gradient(to right, rgba(15,17,21,.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15,17,21,.04) 1px, transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 100%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, black 40%, transparent 100%);
+  }
+
+  .eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+  .eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px color-mix(in oklab, var(--green) 18%, transparent);}
+
+  .headline{
+    font-family:'Space Grotesk';font-weight:500;
+    font-size:clamp(42px,6vw,88px);line-height:1.0;letter-spacing:-.025em;
+    margin:0 0 28px;
+  }
+  .headline .hl{color:var(--accent);font-weight:600;}
+  .headline .ul{
+    background-image:linear-gradient(transparent 72%, color-mix(in oklab, var(--accent) 28%, transparent) 72%);
+    padding:0 4px;
+  }
+  .headline .tight{letter-spacing:-.04em}
+
+  .lede{
+    font-size:clamp(17px,1.3vw,19px);color:var(--ink-2);line-height:1.55;
+    max-width:56ch;margin:0 0 36px;
+  }
+  .cta-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+
+  .hero-meta{
+    margin-top:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;
+    border-top:1px solid var(--line);padding-top:24px;max-width:640px;
+  }
+  .hero-meta .m .k{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px;}
+  .hero-meta .m .v{font-size:22px;font-weight:500;letter-spacing:-.01em;}
+
+  /* --- hero right: live feed + shape decor --- */
+  .feed-wrap{position:relative}
+  .feed-wrap .shapes{
+    position:absolute;inset:-40px -40px -60px -40px;pointer-events:none;z-index:0;
+  }
+  .feed-wrap .shapes .sh{position:absolute;border-radius:8px;opacity:.0;animation:shapeFloat 18s var(--ease) infinite;}
+  .feed-wrap .shapes .sh.q{border-radius:8px;background:transparent;}
+  .feed-wrap .shapes .sh.qc{
+    background:transparent;border-left:10px solid currentColor;border-top:10px solid currentColor;
+    border-radius:100% 0 0 0;
+  }
+  .feed-wrap .shapes .s1{width:54px;height:54px;top:8%;left:-2%;background:color-mix(in oklab, var(--blue) 16%, transparent);animation-delay:-2s;}
+  .feed-wrap .shapes .s2{width:40px;height:40px;top:3%;right:8%;background:color-mix(in oklab, var(--green) 14%, transparent);animation-delay:-6s;}
+  .feed-wrap .shapes .s3{width:70px;height:70px;bottom:4%;left:4%;color:color-mix(in oklab, var(--green) 35%, transparent);animation-delay:-10s;}
+  .feed-wrap .shapes .s4{width:48px;height:48px;bottom:10%;right:-2%;color:color-mix(in oklab, var(--blue) 30%, transparent);animation-delay:-14s;}
+  @keyframes shapeFloat{
+    0%{opacity:0;transform:translate(0,0) rotate(0)}
+    10%{opacity:1}
+    50%{transform:translate(10px,-14px) rotate(8deg)}
+    90%{opacity:1}
+    100%{opacity:0;transform:translate(0,0) rotate(0)}
+  }
+  body.motion-off .feed-wrap .shapes .sh{animation:none;opacity:.7}
+
+  .feed{
+    position:relative;z-index:1;
+    background:white;border:1px solid var(--line);border-radius:16px;
+    padding:22px 22px 18px;
+    box-shadow:0 1px 0 rgba(15,17,21,.02), 0 20px 50px -30px rgba(15,17,21,.15);
+  }
+  .feed-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+  .feed-head .pulse{
+    width:8px;height:8px;border-radius:50%;background:var(--green);position:relative;
+  }
+  .feed-head .pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;background:var(--green);opacity:.4;animation:pulseRing 2s ease-out infinite;}
+  body.motion-off .feed-head .pulse::after{animation:none;opacity:0;}
+  @keyframes pulseRing{0%{transform:scale(.6);opacity:.5}80%{transform:scale(2.4);opacity:0}100%{opacity:0}}
+  .feed-head .title{font-size:14px;font-weight:600;letter-spacing:.02em}
+  .feed-head .tag{margin-left:auto;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);}
+
+  .filter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+  .chip{
+    font-size:12px;padding:5px 11px;border-radius:999px;
+    border:1px solid var(--line);color:var(--ink-2);background:white;cursor:pointer;
+    transition:all .18s var(--ease);font-family:'JetBrains Mono';letter-spacing:.04em;text-transform:uppercase;
+  }
+  .chip:hover{border-color:var(--ink);color:var(--ink)}
+  .chip.on{background:var(--ink);color:white;border-color:var(--ink)}
+
+  .feed-item{
+    display:grid;grid-template-columns:60px 1fr 16px;gap:14px;align-items:center;
+    padding:14px 4px;border-top:1px solid var(--line);
+    cursor:pointer;transition:background .2s var(--ease), transform .2s var(--ease), padding .2s var(--ease);
+    border-radius:8px;
+  }
+  .feed-item:hover{background:var(--bg-2);padding-left:10px;padding-right:10px;}
+  .feed-item .d{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);text-align:center;line-height:1.15;}
+  .feed-item .d .day{display:block;font-size:20px;color:var(--ink);margin-bottom:2px;letter-spacing:0;}
+  .feed-item .type{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+  .feed-item .type .tk{width:6px;height:6px;border-radius:1px;background:var(--ink);}
+  .feed-item .type.news .tk{background:var(--blue)}
+  .feed-item .type.blog .tk{background:var(--green)}
+  .feed-item .type.event .tk{background:var(--ink)}
+  .feed-item .t{font-size:15.5px;line-height:1.3;font-weight:500;color:var(--ink);}
+  .feed-item .arr{color:var(--ink-3);transition:transform .25s var(--ease), color .25s var(--ease);font-size:14px;}
+  .feed-item:hover .arr{transform:translateX(4px);color:var(--ink);}
+  .feed-item.feat{
+    background:color-mix(in oklab, var(--accent) 6%, white);
+    border:1px solid color-mix(in oklab, var(--accent) 18%, var(--line));
+    position:relative;padding:16px 12px;border-radius:10px;margin-bottom:8px;
+  }
+  .feed-item.feat::before{
+    content:"NEU";position:absolute;top:-10px;left:14px;
+    background:var(--green);color:white;font-family:'JetBrains Mono';font-weight:600;
+    font-size:10px;letter-spacing:.12em;padding:3px 8px;border-radius:4px;
+  }
+  .feed-item.feat .t{font-size:17px;font-weight:600;}
+
+  .feed-foot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:10px;border-top:1px solid var(--line);}
+  .feed-foot a{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);display:inline-flex;gap:6px;align-items:center}
+  .feed-foot .dots{display:flex;gap:4px;}
+  .feed-foot .dots span{width:5px;height:5px;border-radius:50%;background:var(--ink-3);opacity:.5}
+  .feed-foot .dots span.on{background:var(--ink);opacity:1}
+
+  /* ===================== SECTION CHROME ===================== */
+  section.cs{
+    padding:clamp(72px,9vw,128px) var(--pad);
+    max-width:var(--max);margin:0 auto;
+    position:relative;
+  }
+  section.cs.bordered{border-bottom:1px solid var(--line);max-width:none;padding-left:0;padding-right:0;}
+  section.cs.bordered > .inner{max-width:var(--max);margin:0 auto;padding:0 var(--pad);}
+  section.cs.dark{background:var(--ink);color:white;border-bottom:0;}
+  section.cs.dark .mono, section.cs.dark .s-sub{color:#9096A3;}
+  section.cs.dark .s-h{color:white;}
+
+  .s-head{display:flex;align-items:baseline;gap:24px;margin-bottom:36px;}
+  .s-head .s-num{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;white-space:nowrap;}
+  .s-head .s-h{font-family:'Space Grotesk';font-weight:500;font-size:clamp(30px,3.5vw,48px);letter-spacing:-.02em;margin:0;line-height:1.05;}
+  .s-head .s-line{flex:1;height:1px;background:var(--line);}
+  .s-sub{color:var(--ink-2);font-size:17px;max-width:60ch;margin:-18px 0 36px;}
+
+  /* ===================== ABOUT ===================== */
+  .about{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(32px,5vw,72px);align-items:start;}
+  .about .big{
+    font-family:'Space Grotesk';font-weight:400;
+    font-size:clamp(24px,2.4vw,32px);line-height:1.25;letter-spacing:-.015em;
+    margin-bottom:24px;
+  }
+  .about p{color:var(--ink-2);font-size:16.5px;line-height:1.65;max-width:54ch;}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;}
+  .tag{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--ink-2);}
+
+  .placeholder{
+    background:
+      repeating-linear-gradient(135deg, transparent 0 18px, rgba(15,17,21,.035) 18px 19px),
+      var(--bg-2);
+    border:1px solid var(--line);border-radius:14px;
+    aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+    position:relative;
+  }
+  .placeholder::after{
+    content:"";position:absolute;inset:12px;border:1px dashed var(--ink-3);border-radius:10px;opacity:.35;
+  }
+
+  /* ===================== COMPONENTS GRID ===================== */
+  .comps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .comp{
+    background:white;padding:28px 26px 24px;position:relative;cursor:pointer;
+    transition:background .25s var(--ease);
+    min-height:280px;display:flex;flex-direction:column;gap:10px;
+    isolation:isolate;
+  }
+  .comp::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, color-mix(in oklab, var(--accent) 5%, transparent), transparent 60%);
+    opacity:0;transition:opacity .25s var(--ease);z-index:-1;
+  }
+  .comp:hover{background:var(--bg-2);}
+  .comp:hover::before{opacity:1;}
+
+  .comp .topline{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;}
+  .comp .cat{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);}
+  .comp .mk{width:22px;height:22px;flex-shrink:0;}
+  .comp .mk.sq{border-radius:3px;}
+  .comp .mk.sq.b{background:var(--blue);}
+  .comp .mk.sq.g{background:var(--green);}
+  .comp .mk.sq.n{background:var(--ink);}
+  .comp .mk.qc{background:transparent;border-left:7px solid var(--ink);border-top:7px solid var(--ink);border-radius:100% 0 0 0;}
+  .comp .mk.qc.b{border-color:var(--blue);}
+  .comp .mk.qc.g{border-color:var(--green);}
+
+  .comp h3{
+    font-family:'Space Grotesk';font-weight:600;font-size:28px;letter-spacing:-.01em;
+    margin:4px 0 2px;line-height:1.1;
+  }
+  .comp .lede-s{font-size:15px;color:var(--ink-2);line-height:1.5;margin:0;}
+  .comp .reveal{
+    max-height:0;overflow:hidden;opacity:0;
+    transition:max-height .35s var(--ease), opacity .25s var(--ease), margin .3s var(--ease);
+  }
+  .comp:hover .reveal{max-height:120px;opacity:1;margin-top:6px;}
+  .comp .reveal .chips{display:flex;gap:6px;flex-wrap:wrap;}
+  .comp .reveal .chips span{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:3px 8px;border:1px solid var(--line);border-radius:999px;}
+
+  .comp .go{
+    margin-top:auto;display:inline-flex;align-items:center;gap:8px;
+    font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);
+    padding-top:14px;
+  }
+  .comp .go .arr{transition:transform .25s var(--ease);display:inline-block;}
+  .comp:hover .go .arr{transform:translateX(4px);}
+
+  /* ===================== APPROACH ===================== */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .pillar{background:white;padding:32px 28px;min-height:260px;display:flex;flex-direction:column;gap:12px;position:relative;transition:background .25s var(--ease)}
+  .pillar:hover{background:var(--bg-2)}
+  .pillar .pn{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;}
+  .pillar h3{font-family:'Space Grotesk';font-weight:500;font-size:30px;letter-spacing:-.015em;margin:0;line-height:1.1;}
+  .pillar p{color:var(--ink-2);font-size:15.5px;line-height:1.55;margin:0;}
+  .pillar .mk{position:absolute;top:28px;right:28px;}
+
+  /* ===================== FORSCHUNG (dark) ===================== */
+  .qgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px 56px;}
+  .q{padding:20px 0;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:18px;align-items:flex-start;}
+  .q .qn{font-family:'JetBrains Mono';font-size:12px;letter-spacing:.14em;color:var(--blue-l);text-transform:uppercase;min-width:40px;padding-top:4px;}
+  .q h4{font-family:'Space Grotesk';font-weight:500;font-size:22px;letter-spacing:-.01em;margin:0 0 8px;color:white;line-height:1.2;}
+  .q p{font-size:15px;color:#9096A3;line-height:1.55;margin:0;max-width:48ch;}
+
+  /* ===================== NEWS LONG ===================== */
+  .news{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:48px;}
+  .news .feat .ph{aspect-ratio:16/10;margin-bottom:18px;}
+  .news .feat .d{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;}
+  .news .feat h3{font-family:'Space Grotesk';font-weight:500;font-size:32px;letter-spacing:-.015em;line-height:1.15;margin:0 0 12px;}
+  .news .feat p{color:var(--ink-2);font-size:15.5px;line-height:1.6;margin:0 0 18px;max-width:42ch;}
+  .news .col{display:flex;flex-direction:column;}
+  .news .item{padding:16px 0;border-top:1px solid var(--line);display:block;cursor:pointer;transition:padding .2s var(--ease);}
+  .news .item:hover{padding-left:6px;}
+  .news .item .d{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px;}
+  .news .item h4{font-family:'Space Grotesk';font-weight:500;font-size:18px;letter-spacing:-.01em;margin:0;line-height:1.3;}
+
+  /* ===================== PARTNERS + FUNDER ===================== */
+  .partners{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:36px;}
+  .partners .p{background:white;aspect-ratio:2/1;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.1em;color:var(--ink-3);text-transform:uppercase;transition:background .2s var(--ease)}
+  .partners .p:hover{background:var(--bg-2)}
+
+  .funder{
+    display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;
+    padding:28px 32px;border:1px solid var(--line);border-radius:14px;background:var(--bg-2);
+  }
+  .funder .ph{width:170px;aspect-ratio:5/3;border-radius:10px;}
+  .funder .t .k{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px;}
+  .funder .t h3{font-family:'Space Grotesk';font-weight:500;font-size:24px;letter-spacing:-.01em;margin:0 0 4px;line-height:1.25;}
+  .funder .t a{color:var(--ink-2);font-size:14px;}
+  .funder .t a:hover{color:var(--accent);}
+
+  /* ===================== CONTACT ===================== */
+  .contact{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(32px,5vw,72px);}
+  .contact .big{font-family:'Space Grotesk';font-weight:400;font-size:clamp(24px,2.2vw,30px);line-height:1.3;letter-spacing:-.01em;margin-bottom:28px;}
+  .contact .line{display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);font-size:15.5px;}
+  .contact .line .mk{width:12px;height:12px;border-radius:2px;}
+  .contact .line .mk.b{background:var(--blue);}
+  .contact .line .mk.g{background:var(--green);}
+  .contact .line .mk.n{background:var(--ink);}
+  .contact .line .l{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-left:auto;}
+  .form{background:white;border:1px solid var(--line);border-radius:14px;padding:28px;}
+  .form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .form label{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);display:block;margin-bottom:6px;}
+  .form input, .form textarea{
+    width:100%;border:0;border-bottom:1px solid var(--line);padding:8px 0;background:transparent;
+    font-family:'Space Grotesk';font-size:15px;color:var(--ink);transition:border-color .2s var(--ease);
+    outline:none;
+  }
+  .form textarea{min-height:100px;resize:vertical;line-height:1.5;}
+  .form input:focus, .form textarea:focus{border-color:var(--ink);}
+  .form .cta-row{margin-top:18px;justify-content:flex-end;display:flex;}
+
+  /* ===================== FOOTER ===================== */
+  footer{background:var(--ink);color:#C9CCD3;padding:72px var(--pad) 40px;position:relative;overflow:hidden;}
+  footer::before{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size:60px 100%;
+    mask-image:linear-gradient(90deg, black 0%, transparent 40%);
+    -webkit-mask-image:linear-gradient(90deg, black 0%, transparent 40%);
+    pointer-events:none;
+  }
+  .foot-inner{max-width:var(--max);margin:0 auto;position:relative;z-index:1;}
+  .foot-top{
+    display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:48px;
+    padding-bottom:56px;border-bottom:1px solid rgba(255,255,255,.1);
+  }
+  .foot-brand .wm{font-family:'Space Grotesk';font-weight:600;font-size:56px;letter-spacing:-.02em;color:white;line-height:1;margin-bottom:18px;}
+  .foot-brand p{font-size:15px;max-width:32ch;line-height:1.55;}
+  .foot-col h5{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6D7380;margin:0 0 18px;}
+  .foot-col a{display:block;padding:5px 0;font-size:14.5px;color:#C9CCD3;transition:color .2s var(--ease);}
+  .foot-col a:hover{color:white;}
+  .foot-bottom{display:flex;gap:24px;align-items:center;padding-top:28px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.08em;color:#6D7380;}
+  .foot-bottom .sp{flex:1;}
+  .foot-bottom a:hover{color:white;}
+  .foot-shape{position:absolute;right:-80px;top:60px;display:grid;grid-template-columns:1fr 1fr;gap:16px;width:240px;height:240px;opacity:.08;z-index:0;}
+  .foot-shape div{border-radius:8px;}
+  .foot-shape .a{background:white;}
+  .foot-shape .b{background:var(--blue-l);}
+  .foot-shape .c{background:var(--green);}
+  .foot-shape .d{background:white;}
+
+  /* ===================== REVEAL ===================== */
+  .reveal-up{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease), transform .7s var(--ease);}
+  .reveal-up.in{opacity:1;transform:none;}
+  body.motion-off .reveal-up{opacity:1;transform:none;transition:none;}
+
+  /* ===================== TWEAKS PANEL ===================== */
+  #tweaks{
+    position:fixed;right:18px;bottom:18px;z-index:200;
+    background:white;border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    box-shadow:0 20px 50px -20px rgba(15,17,21,.2);
+    font-family:'Space Grotesk';font-size:14px;min-width:240px;
+    display:none;
+  }
+  #tweaks.show{display:block;}
+  #tweaks h5{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 12px;}
+  #tweaks .tw{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 0;border-top:1px solid var(--line);}
+  #tweaks .tw:first-of-type{border-top:0;padding-top:0;}
+  #tweaks .swatch{display:flex;gap:6px;}
+  #tweaks .swatch button{width:22px;height:22px;border-radius:6px;border:2px solid transparent;cursor:pointer;transition:transform .15s var(--ease);}
+  #tweaks .swatch button:hover{transform:scale(1.12);}
+  #tweaks .swatch button.on{border-color:var(--ink);}
+  #tweaks label.switch{position:relative;width:36px;height:20px;background:var(--line);border-radius:999px;cursor:pointer;transition:background .2s var(--ease);}
+  #tweaks label.switch::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;background:white;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s var(--ease);}
+  #tweaks label.switch.on{background:var(--ink);}
+  #tweaks label.switch.on::after{left:18px;}
+  #tweaks label.switch input{position:absolute;opacity:0;inset:0;cursor:pointer;}
+
+  /* ===================== RESPONSIVE ===================== */
+  @media (max-width: 980px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-meta{grid-template-columns:repeat(2,1fr);}
+    .comps{grid-template-columns:repeat(2,1fr);}
+    .pillars{grid-template-columns:1fr;}
+    .qgrid{grid-template-columns:1fr;gap:0;}
+    .news{grid-template-columns:1fr;}
+    .partners{grid-template-columns:repeat(2,1fr);}
+    .funder{grid-template-columns:1fr;text-align:center;}
+    .contact{grid-template-columns:1fr;}
+    .foot-top{grid-template-columns:1fr 1fr;}
+    .about{grid-template-columns:1fr;}
+    .nav-menu{display:none;}
+  }
+  @media (max-width: 620px){
+    .comps{grid-template-columns:1fr;}
+    .partners{grid-template-columns:1fr;}
+    .foot-top{grid-template-columns:1fr;}
+    .form .row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body class="grid-on">
+
+<!-- NAV -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#" class="brand">
+      <span class="logo"><span class="s1"></span><span class="s2"></span><span class="s3"></span><span class="s4"></span></span>
+      <span>KATALYST</span>
+    </a>
+    <nav class="nav-menu">
+      <a href="#projekt">Projekt</a>
+      <a href="#ansatz">Ansatz</a>
+      <a href="#plattform">Plattform</a>
+      <a href="#forschung">Forschung</a>
+      <a href="#news">News</a>
+      <a href="#partner">Partner</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <div class="nav-right">
+      <div class="lang"><span class="on">DE</span><span>EN</span></div>
+      <a href="#kontakt" class="btn primary">Kontakt <span class="arr">→</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="reveal-up">
+      <div class="eyebrow">
+        <span class="dot"></span>
+        <span class="mono">Forschungs­projekt · Hochschule Kempten · 2025 – 2028</span>
+      </div>
+      <h1 class="headline">
+        Hochschul­lehre<br/>
+        mit <span class="hl">generativer KI</span>:<br/>
+        <span class="ul">nutzbar.</span> fair.<br/>
+        <span class="tight">zukunfts­fähig.</span>
+      </h1>
+      <p class="lede">
+        KATALYST entwickelt eine frei verfügbare Plattform für personalisiertes Lernen, effizientere Material­erstellung und moderne, transparente Prüfungs­formate — datenschutz­konform, barriere­arm, modular integrierbar.
+      </p>
+      <div class="cta-row">
+        <a href="#plattform" class="btn primary">Plattform entdecken <span class="arr">→</span></a>
+        <a href="#projekt" class="btn">Über das Projekt</a>
+      </div>
+
+      <div class="hero-meta">
+        <div class="m"><div class="k">Laufzeit</div><div class="v">3 Jahre</div></div>
+        <div class="m"><div class="k">Plattform</div><div class="v">modular</div></div>
+        <div class="m"><div class="k">Komponenten</div><div class="v">6</div></div>
+        <div class="m"><div class="k">Zugang</div><div class="v">frei</div></div>
+      </div>
+    </div>
+
+    <!-- LIVE FEED -->
+    <div class="feed-wrap reveal-up">
+      <div class="shapes" aria-hidden="true">
+        <span class="sh q s1"></span>
+        <span class="sh q s2"></span>
+        <span class="sh qc s3"></span>
+        <span class="sh qc s4"></span>
+      </div>
+
+      <div class="feed">
+        <div class="feed-head">
+          <span class="pulse"></span>
+          <span class="title">Aus dem Projekt</span>
+          <span class="tag">live</span>
+        </div>
+
+        <div class="filter" role="tablist">
+          <button class="chip on" data-f="all">alle</button>
+          <button class="chip" data-f="news">news</button>
+          <button class="chip" data-f="blog">blog</button>
+          <button class="chip" data-f="event">events</button>
+          <button class="chip" data-f="publ">publikationen</button>
+        </div>
+
+        <div class="feed-items">
+          <a class="feed-item feat" data-cat="news">
+            <div class="d"><span class="day">12</span>März · 26</div>
+            <div>
+              <div class="type news"><span class="tk"></span>news</div>
+              <div class="t">Pilotphase startet an der HS Kempten</div>
+            </div>
+            <div class="arr">→</div>
+          </a>
+          <a class="feed-item" data-cat="blog">
+            <div class="d"><span class="day">04</span>März · 26</div>
+            <div>
+              <div class="type blog"><span class="tk"></span>blog</div>
+              <div class="t">Was fair geprüft werden kann</div>
+            </div>
+            <div class="arr">→</div>
+          </a>
+          <a class="feed-item" data-cat="event">
+            <div class="d"><span class="day">26</span>Feb · 26</div>
+            <div>
+              <div class="type event"><span class="tk"></span>event</div>
+              <div class="t">Fachtag: KI in der Lehre</div>
+            </div>
+            <div class="arr">→</div>
+          </a>
+          <a class="feed-item" data-cat="publ">
+            <div class="d"><span class="day">14</span>Feb · 26</div>
+            <div>
+              <div class="type news"><span class="tk"></span>publikation</div>
+              <div class="t">Whitepaper v1 veröffentlicht</div>
+            </div>
+            <div class="arr">→</div>
+          </a>
+        </div>
+
+        <div class="feed-foot">
+          <a href="#news">Alle Beiträge <span>→</span></a>
+          <div class="dots"><span class="on"></span><span></span><span></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJEKT / ABOUT -->
+<section class="cs" id="projekt">
+  <div class="s-head reveal-up">
+    <span class="s-num">01 · Projekt</span>
+    <h2 class="s-h">Was ist KATALYST?</h2>
+    <span class="s-line"></span>
+  </div>
+  <div class="about">
+    <div class="reveal-up">
+      <div class="big">Ein Forschungs­projekt zur grund­legenden Modernisierung der Hochschul­lehre mit generativer KI — gestartet an der Hochschule Kempten.</div>
+      <p>Entwickelt wird eine hochschul­weite, frei verfügbare Plattform, die Studierende beim Lernen unterstützt und Lehrende bei Material­erstellung, Korrektur und Prüfungs­durchführung entlastet. Die Komponenten sind modular einsetzbar und können an bestehende Systeme angebunden werden.</p>
+      <div class="tags">
+        <span class="tag">datenschutz­konform</span>
+        <span class="tag">barrierearm</span>
+        <span class="tag">modular</span>
+        <span class="tag">offen</span>
+      </div>
+    </div>
+    <div class="reveal-up">
+      <div class="placeholder" style="aspect-ratio:4/3">[ Abbildung · Projekt-Kontext ]</div>
+    </div>
+  </div>
+</section>
+
+<!-- ANSATZ -->
+<section class="cs bordered" id="ansatz">
+  <div class="inner">
+    <div class="s-head reveal-up">
+      <span class="s-num">02 · Ansatz</span>
+      <h2 class="s-h">Drei Säulen. Eine Plattform.</h2>
+      <span class="s-line"></span>
+    </div>
+    <div class="pillars reveal-up">
+      <div class="pillar">
+        <div class="mk sq b"></div>
+        <div class="pn">01 — Studierende</div>
+        <h3>Personalisiertes Lernen</h3>
+        <p>Lernbegleitung, die auf Vorwissen, Tempo und Ziele reagiert — mit Fokus auf Selbst­wirksamkeit und Reflexion.</p>
+      </div>
+      <div class="pillar">
+        <div class="mk qc g"></div>
+        <div class="pn">02 — Lehrende</div>
+        <h3>Effizientere Material­erstellung</h3>
+        <p>KI-Werkzeuge, die Lehrende bei Recherche, Aufbereitung und Aktualisierung von Lern­inhalten entlasten.</p>
+      </div>
+      <div class="pillar">
+        <div class="mk sq n"></div>
+        <div class="pn">03 — Prüfung</div>
+        <h3>Transparente Prüfungs­formate</h3>
+        <p>Prüfungs­formate, die KI kontrolliert einbinden — fair, nachvollzieh­bar und für alle Studierenden verfügbar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATTFORM / 6 COMPONENTS -->
+<section class="cs" id="plattform">
+  <div class="s-head reveal-up">
+    <span class="s-num">03 · Plattform</span>
+    <h2 class="s-h">Sechs Komponenten. Modular kombinierbar.</h2>
+    <span class="s-line"></span>
+  </div>
+  <p class="s-sub reveal-up">Jede Komponente adressiert eine konkrete Heraus­forderung der Hochschul­lehre — einzeln nutzbar, im Zusammen­spiel stark.</p>
+
+  <div class="comps reveal-up">
+    <a class="comp">
+      <div class="topline"><span class="cat">01 · Material</span><span class="mk sq b"></span></div>
+      <h3>FactTrack</h3>
+      <p class="lede-s">Automatisierte, themen­spezifische Literatur­recherche und Bewertung wissenschaftlicher Quellen.</p>
+      <div class="reveal"><div class="chips"><span>Recherche</span><span>Qualitäts­kriterien</span><span>Aktualisierung</span></div></div>
+      <span class="go">mehr erfahren <span class="arr">→</span></span>
+    </a>
+    <a class="comp">
+      <div class="topline"><span class="cat">02 · Lernen</span><span class="mk qc b"></span></div>
+      <h3>DigitalTwin</h3>
+      <p class="lede-s">Virtueller Lern­begleiter, der Fach­wissen und Kommunikations­stil einer Lehrperson abbildet.</p>
+      <div class="reveal"><div class="chips"><span>24/7 verfügbar</span><span>Personalisiert</span><span>Reflektierend</span></div></div>
+      <span class="go">mehr erfahren <span class="arr">→</span></span>
+    </a>
+    <a class="comp">
+      <div class="topline"><span class="cat">03 · Lernen</span><span class="mk sq g"></span></div>
+      <h3>EduGameFactory</h3>
+      <p class="lede-s">KI-gestützte Generierung didaktisch hoch­wertiger Serious Games aus Lehr­inhalten.</p>
+      <div class="reveal"><div class="chips"><span>Serious Games</span><span>Didaktik-geleitet</span><span>Motivation</span></div></div>
+      <span class="go">mehr erfahren <span class="arr">→</span></span>
+    </a>
+    <a class="comp">
+      <div class="topline"><span class="cat">04 · Prüfung</span><span class="mk qc g"></span></div>
+      <h3>Gexam</h3>
+      <p class="lede-s">Zukunfts­fähige Prüfungs­formate mit KI-Rollen — Mentor, Peer, Prüfer. Transparent und fair.</p>
+      <div class="reveal"><div class="chips"><span>KI-Rollen</span><span>Kontrolliert</span><span>Barrierefrei</span></div></div>
+      <span class="go">mehr erfahren <span class="arr">→</span></span>
+    </a>
+    <a class="comp">
+      <div class="topline"><span class="cat">05 · Material</span><span class="mk sq n"></span></div>
+      <h3>SourceVerifier</h3>
+      <p class="lede-s">Intelligente Quellen­prüfung zur Erkennung fehlerhafter oder erfundener Referenzen.</p>
+      <div class="reveal"><div class="chips"><span>Zitierpraxis</span><span>Fact-Checking</span><span>Wissenschaftlich</span></div></div>
+      <span class="go">mehr erfahren <span class="arr">→</span></span>
+    </a>
+    <a class="comp">
+      <div class="topline"><span class="cat">06 · Prüfung</span><span class="mk qc n"></span></div>
+      <h3>ExamAssistant</h3>
+      <p class="lede-s">Objektive, teil­automatisierte Prüfungs­bewertung — inkl. Transkription und begründetem Scoring.</p>
+      <div class="reveal"><div class="chips"><span>Transkription</span><span>Folge­fragen</span><span>Begründetes Scoring</span></div></div>
+      <span class="go">mehr erfahren <span class="arr">→</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- FORSCHUNG (dark) -->
+<section class="cs bordered dark" id="forschung">
+  <div class="inner">
+    <div class="s-head reveal-up">
+      <span class="s-num" style="color:#6D7380">04 · Forschung</span>
+      <h2 class="s-h">Worauf wir Antworten suchen.</h2>
+      <span class="s-line" style="background:rgba(255,255,255,.15)"></span>
+    </div>
+    <div class="qgrid reveal-up">
+      <div class="q"><span class="qn">Q1</span><div><h4>Wie bleibt Prüfung fair?</h4><p>Wie integrieren wir generative KI in Prüfungs­formate, ohne Fairness, Chancen­gleichheit und Prüfungs­sicherheit zu unterlaufen?</p></div></div>
+      <div class="q"><span class="qn">Q2</span><div><h4>Was brauchen Lehrende wirklich?</h4><p>Welche Arbeits­schritte lassen sich sinnvoll entlasten — und wo ist menschliche Expertise unverzichtbar?</p></div></div>
+      <div class="q"><span class="qn">Q3</span><div><h4>Wie integriert man KI modular?</h4><p>Welche Architektur ermöglicht eine hochschul­weite, frei verfügbare Plattform, die mit bestehenden Systemen zusammen­arbeitet?</p></div></div>
+      <div class="q"><span class="qn">Q4</span><div><h4>Wie bleibt Lernen selbst­bestimmt?</h4><p>Wie unterstützen wir Studierende so, dass Eigen­ständigkeit und kritisches Denken gestärkt — nicht ersetzt — werden?</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS LONG -->
+<section class="cs" id="news">
+  <div class="s-head reveal-up">
+    <span class="s-num">05 · Aktuelles</span>
+    <h2 class="s-h">Aus dem Projekt.</h2>
+    <span class="s-line"></span>
+  </div>
+  <div class="news reveal-up">
+    <article class="feat">
+      <div class="placeholder ph">[ Titelbild ]</div>
+      <div class="d">12. März 2026 · News</div>
+      <h3>Pilotphase startet an der Hochschule Kempten</h3>
+      <p>Die ersten drei Komponenten gehen in einem begleiteten Pilot­versuch an den Start — mit Studierenden und Lehrenden aus mehreren Fakultäten.</p>
+      <a class="btn">weiterlesen <span class="arr">→</span></a>
+    </article>
+    <div class="col">
+      <a class="item"><div class="d">04. März 2026 · Blog</div><h4>Was fair geprüft werden kann</h4></a>
+      <a class="item"><div class="d">26. Feb 2026 · Event</div><h4>Fachtag KI in der Lehre</h4></a>
+      <a class="item"><div class="d">14. Feb 2026 · Publikation</div><h4>Whitepaper v1 veröffentlicht</h4></a>
+    </div>
+    <div class="col">
+      <a class="item"><div class="d">31. Jan 2026 · News</div><h4>Kick-off Konsortium</h4></a>
+      <a class="item"><div class="d">15. Jan 2026 · Blog</div><h4>Was „modular" eigentlich heisst</h4></a>
+      <a class="item"><div class="d">20. Dez 2025 · News</div><h4>Projektstart KATALYST</h4></a>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNER + FUNDER -->
+<section class="cs bordered" id="partner">
+  <div class="inner">
+    <div class="s-head reveal-up">
+      <span class="s-num">06 · Partner</span>
+      <h2 class="s-h">Wer KATALYST möglich macht.</h2>
+      <span class="s-line"></span>
+    </div>
+    <div class="partners reveal-up">
+      <div class="p">HS Kempten</div>
+      <div class="p">Partner-Logo</div>
+      <div class="p">Partner-Logo</div>
+      <div class="p">Partner-Logo</div>
+      <div class="p">Partner-Logo</div>
+    </div>
+    <div class="funder reveal-up">
+      <div class="placeholder ph">Stiftung-Logo</div>
+      <div class="t">
+        <div class="k">Förderung</div>
+        <h3>Gefördert von der Stiftung Innovation in der Hochschullehre</h3>
+        <a href="https://stiftung-hochschullehre.de/" target="_blank" rel="noopener">stiftung-hochschullehre.de ↗</a>
+      </div>
+      <a href="https://stiftung-hochschullehre.de/" target="_blank" rel="noopener" class="btn">Zur Förderseite <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="cs" id="kontakt">
+  <div class="s-head reveal-up">
+    <span class="s-num">07 · Kontakt</span>
+    <h2 class="s-h">Mitreden. Mitbauen.</h2>
+    <span class="s-line"></span>
+  </div>
+  <div class="contact">
+    <div class="reveal-up">
+      <div class="big">Austausch, Adoption, Presse — wir freuen uns auf Ihre Nachricht.</div>
+      <div class="line"><span class="mk b"></span><span>projekt@katalyst-education.de</span><span class="l">Allgemein</span></div>
+      <div class="line"><span class="mk g"></span><span>adoption@katalyst-education.de</span><span class="l">Hochschulen</span></div>
+      <div class="line"><span class="mk n"></span><span>presse@katalyst-education.de</span><span class="l">Presse</span></div>
+      <div class="line"><span class="mk b"></span><span>Hochschule Kempten · Bahnhofstr. 61 · 87435 Kempten</span><span class="l">Adresse</span></div>
+    </div>
+    <form class="form reveal-up" onsubmit="event.preventDefault();">
+      <div class="row">
+        <div><label>Name</label><input type="text" placeholder="Ihr Name" /></div>
+        <div><label>E-Mail</label><input type="email" placeholder="ihre@adresse.de" /></div>
+      </div>
+      <div><label>Organisation (optional)</label><input type="text" placeholder="Hochschule / Unternehmen" /></div>
+      <div style="margin-top:14px;"><label>Nachricht</label><textarea placeholder="Worum geht es?"></textarea></div>
+      <div class="cta-row"><button type="submit" class="btn primary">Senden <span class="arr">→</span></button></div>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-shape" aria-hidden="true">
+    <div class="a"></div><div class="b"></div><div class="c"></div><div class="d"></div>
+  </div>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <div class="wm">KATALYST</div>
+        <p>Hochschullehre mit generativer KI. Nutzbar, fair, zukunftsfähig. Ein Forschungs­projekt der Hochschule Kempten.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Projekt</h5>
+        <a href="#projekt">Über</a>
+        <a href="#ansatz">Ansatz</a>
+        <a href="#forschung">Forschung</a>
+        <a href="#news">News</a>
+      </div>
+      <div class="foot-col">
+        <h5>Plattform</h5>
+        <a href="#plattform">FactTrack</a>
+        <a href="#plattform">DigitalTwin</a>
+        <a href="#plattform">EduGameFactory</a>
+        <a href="#plattform">Gexam</a>
+        <a href="#plattform">SourceVerifier</a>
+        <a href="#plattform">ExamAssistant</a>
+      </div>
+      <div class="foot-col">
+        <h5>Kontakt</h5>
+        <a href="mailto:projekt@katalyst-education.de">projekt@katalyst-education.de</a>
+        <a href="https://stiftung-hochschullehre.de/" target="_blank" rel="noopener">Förderung ↗</a>
+        <a href="#kontakt">Presse</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 KATALYST · Hochschule Kempten</span>
+      <span class="sp"></span>
+      <a href="#">Impressum</a>
+      <a href="#">Datenschutz</a>
+      <a href="#">Barrierefreiheit</a>
+    </div>
+  </div>
+</footer>
+
+<!-- TWEAKS -->
+<div id="tweaks">
+  <h5>Tweaks</h5>
+  <div class="tw">
+    <span>Akzent-Farbe</span>
+    <div class="swatch">
+      <button data-accent="blue" class="on" style="background:#354B8A" title="Blau"></button>
+      <button data-accent="green" style="background:#09814A" title="Grün"></button>
+    </div>
+  </div>
+  <div class="tw">
+    <span>Hintergrund-Grid</span>
+    <label class="switch on" id="tw-grid"><input type="checkbox" checked /></label>
+  </div>
+  <div class="tw">
+    <span>Animation</span>
+    <label class="switch on" id="tw-motion"><input type="checkbox" checked /></label>
+  </div>
+</div>
+
+<script>
+  // === Tweak defaults (editmode-persisted) ===
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": "blue",
+    "grid": true,
+    "motion": true
+  }/*EDITMODE-END*/;
+
+  // apply defaults
+  function applyAccent(a){
+    const root = document.documentElement;
+    if(a === 'green'){
+      root.style.setProperty('--accent', 'var(--green)');
+      root.style.setProperty('--accent-d', 'var(--green-d)');
+    }else{
+      root.style.setProperty('--accent', 'var(--blue)');
+      root.style.setProperty('--accent-d', 'var(--blue-d)');
+    }
+    document.querySelectorAll('#tweaks .swatch button').forEach(b=>{
+      b.classList.toggle('on', b.dataset.accent === a);
+    });
+  }
+  function applyGrid(v){
+    document.body.classList.toggle('grid-on', !!v);
+    const sw = document.getElementById('tw-grid');
+    if(sw){ sw.classList.toggle('on', !!v); sw.querySelector('input').checked = !!v; }
+  }
+  function applyMotion(v){
+    document.body.classList.toggle('motion-off', !v);
+    const sw = document.getElementById('tw-motion');
+    if(sw){ sw.classList.toggle('on', !!v); sw.querySelector('input').checked = !!v; }
+  }
+  applyAccent(TWEAK_DEFAULTS.accent);
+  applyGrid(TWEAK_DEFAULTS.grid);
+  applyMotion(TWEAK_DEFAULTS.motion);
+
+  // === Scroll reveal ===
+  const io = new IntersectionObserver((entries) => {
+    for(const e of entries){
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    }
+  }, {threshold:.12, rootMargin:'0px 0px -40px 0px'});
+  document.querySelectorAll('.reveal-up').forEach(el => io.observe(el));
+
+  // === Feed filter ===
+  const chips = document.querySelectorAll('.chip');
+  const items = document.querySelectorAll('.feed-item');
+  chips.forEach(c => c.addEventListener('click', () => {
+    chips.forEach(x => x.classList.remove('on'));
+    c.classList.add('on');
+    const f = c.dataset.f;
+    items.forEach(it => {
+      const show = f === 'all' || it.dataset.cat === f;
+      it.style.display = show ? '' : 'none';
+    });
+  }));
+
+  // === Tweaks panel (edit mode) ===
+  window.addEventListener('message', (e) => {
+    const d = e.data || {};
+    if (d.type === '__activate_edit_mode')   document.getElementById('tweaks').classList.add('show');
+    if (d.type === '__deactivate_edit_mode') document.getElementById('tweaks').classList.remove('show');
+  });
+  window.parent.postMessage({type:'__edit_mode_available'},'*');
+
+  document.querySelectorAll('#tweaks .swatch button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const a = b.dataset.accent;
+      applyAccent(a);
+      window.parent.postMessage({type:'__edit_mode_set_keys', edits:{accent:a}},'*');
+    });
+  });
+  document.getElementById('tw-grid').addEventListener('click', (e)=>{
+    if(e.target.tagName === 'INPUT') return;
+    const v = !document.body.classList.contains('grid-on');
+    applyGrid(v);
+    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{grid:v}},'*');
+  });
+  document.getElementById('tw-motion').addEventListener('click', (e)=>{
+    if(e.target.tagName === 'INPUT') return;
+    const v = document.body.classList.contains('motion-off'); // currently off? then turning on
+    applyMotion(v);
+    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{motion:v}},'*');
+  });
+</script>
+
+</body>
+</html>

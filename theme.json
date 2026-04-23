@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.9/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "layout": {
+      "contentSize": "840px",
+      "wideSize": "1360px"
+    },
+    "color": {
+      "defaultPalette": false,
+      "palette": [
+        { "slug": "background", "name": "Background", "color": "#FFFFFF" },
+        { "slug": "surface", "name": "Surface", "color": "#F7F7F5" },
+        { "slug": "surface-strong", "name": "Surface Strong", "color": "#EFEFEC" },
+        { "slug": "ink", "name": "Ink", "color": "#0F1115" },
+        { "slug": "ink-muted", "name": "Ink Muted", "color": "#4B5260" },
+        { "slug": "line", "name": "Line", "color": "#E2E4E8" },
+        { "slug": "blue", "name": "Blue", "color": "#354B8A" },
+        { "slug": "blue-light", "name": "Blue Light", "color": "#587BDF" },
+        { "slug": "blue-dark", "name": "Blue Dark", "color": "#243460" },
+        { "slug": "green", "name": "Green", "color": "#09814A" },
+        { "slug": "footer", "name": "Footer", "color": "#D7DAE5" }
+      ]
+    },
+    "spacing": {
+      "units": ["px", "rem", "vw", "%"],
+      "spacingScale": {
+        "operator": "*",
+        "increment": 1.5,
+        "steps": 8,
+        "mediumStep": 1
+      }
+    },
+    "border": {
+      "radiusSizes": [
+        { "slug": "sm", "name": "Small", "size": "8px" },
+        { "slug": "md", "name": "Medium", "size": "14px" },
+        { "slug": "lg", "name": "Large", "size": "20px" }
+      ]
+    },
+    "typography": {
+      "fluid": true,
+      "fontFamilies": [
+        { "slug": "display", "name": "Space Grotesk", "fontFamily": "'Space Grotesk', system-ui, sans-serif" },
+        { "slug": "mono", "name": "JetBrains Mono", "fontFamily": "'JetBrains Mono', monospace" }
+      ],
+      "fontSizes": [
+        { "slug": "xs", "size": "0.75rem", "name": "XS" },
+        { "slug": "sm", "size": "0.875rem", "name": "Small" },
+        { "slug": "base", "size": "1rem", "name": "Base" },
+        { "slug": "lg", "size": "1.25rem", "name": "Large" },
+        { "slug": "xl", "size": "2rem", "name": "XL" },
+        { "slug": "hero", "size": "clamp(2.6rem, 6vw, 5.5rem)", "name": "Hero" }
+      ]
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "#FFFFFF",
+      "text": "#0F1115"
+    },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--display)",
+      "lineHeight": "1.55"
+    },
+    "elements": {
+      "button": {
+        "border": { "radius": "999px" },
+        "color": { "background": "#0F1115", "text": "#FFFFFF" },
+        ":hover": {
+          "color": { "background": "#354B8A", "text": "#FFFFFF" }
+        }
+      },
+      "link": {
+        "color": { "text": "#0F1115" }
+      },
+      "input": {
+        "border": { "radius": "0px" }
+      }
+    }
+  }
+}

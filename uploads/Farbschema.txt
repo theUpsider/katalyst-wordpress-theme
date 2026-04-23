@@ -1,0 +1,38 @@
+Logo:
+Light Mode: 
+- Schwarz/Gunmetal = #3D3D43
+- Blau = #415CA9
+- Gruen = #09814A
+
+Dark Mode
+- Hell Grau = #E4E4E4
+
+Website(Vorläufiger Vorschlag):
+Light Mode:
+  - primary
+    - main: #354B8A
+    - Light: #587BDF
+    - Dark: #243460
+  - secondary:
+    - main: #FFBE86
+    - Light: FBCB78
+    - Dark: #810940
+  - Text:
+	- primary: #000000
+	- secondary: #E4E4E4
+  - Background: #FFFFFF
+  - Header: #FFFFFF
+  - Footer: #D7DAE5
+Dark Mode(unvollständig):
+  - primary
+	- main: #587BDF
+    - Light: #587BDF
+    - Dark: #415CA9
+  - secondary:
+	- main: #09810E
+  - Text:
+	- primary: #E4E4E4
+	- secondary: #000000
+  - Background: #3D3D43
+  - Header: #0D0D0E
+  - Footer: #515257
