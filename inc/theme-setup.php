@@ -18,6 +18,8 @@ function katalyst_setup(): void {
 	add_theme_support( 'automatic-feed-links' );
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
+	add_theme_support( 'block-templates' );
+	add_theme_support( 'block-template-parts' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'align-wide' );
 	add_theme_support( 'editor-styles' );
@@ -49,6 +51,21 @@ function katalyst_setup(): void {
 	add_editor_style( 'assets/css/theme.css' );
 }
 add_action( 'after_setup_theme', 'katalyst_setup' );
+
+/**
+ * Register custom block pattern categories.
+ */
+function katalyst_register_pattern_categories(): void {
+	if ( function_exists( 'register_block_pattern_category' ) ) {
+		register_block_pattern_category(
+			'katalyst-sections',
+			array(
+				'label' => __( 'Katalyst Sections', 'katalyst' ),
+			)
+		);
+	}
+}
+add_action( 'init', 'katalyst_register_pattern_categories' );
 
 /**
  * Enqueue frontend assets.
@@ -132,3 +149,49 @@ function katalyst_handle_contact_form(): void {
 }
 add_action( 'admin_post_nopriv_katalyst_contact', 'katalyst_handle_contact_form' );
 add_action( 'admin_post_katalyst_contact', 'katalyst_handle_contact_form' );
+
+/**
+ * Render the contact form shortcode.
+ *
+ * @return string
+ */
+function katalyst_contact_form_shortcode(): string {
+	$status = function_exists( 'katalyst_get_contact_status' ) ? katalyst_get_contact_status() : '';
+
+	ob_start();
+	?>
+	<form class="form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<?php if ( 'success' === $status ) : ?>
+			<div class="notice-banner success"><?php esc_html_e( 'Danke. Ihre Nachricht wurde gesendet.', 'katalyst' ); ?></div>
+		<?php elseif ( 'error' === $status || 'invalid' === $status ) : ?>
+			<div class="notice-banner error"><?php esc_html_e( 'Bitte prüfen Sie Ihre Angaben und versuchen Sie es erneut.', 'katalyst' ); ?></div>
+		<?php endif; ?>
+		<input type="hidden" name="action" value="katalyst_contact">
+		<?php wp_nonce_field( 'katalyst_contact_form', 'katalyst_contact_nonce' ); ?>
+		<div class="row">
+			<div>
+				<label for="contact_name"><?php esc_html_e( 'Name', 'katalyst' ); ?></label>
+				<input id="contact_name" name="contact_name" type="text" required>
+			</div>
+			<div>
+				<label for="contact_email"><?php esc_html_e( 'E-Mail', 'katalyst' ); ?></label>
+				<input id="contact_email" name="contact_email" type="email" required>
+			</div>
+		</div>
+		<div>
+			<label for="contact_organization"><?php esc_html_e( 'Organisation (optional)', 'katalyst' ); ?></label>
+			<input id="contact_organization" name="contact_organization" type="text">
+		</div>
+		<div style="margin-top:14px;">
+			<label for="contact_message"><?php esc_html_e( 'Nachricht', 'katalyst' ); ?></label>
+			<textarea id="contact_message" name="contact_message" required></textarea>
+		</div>
+		<div class="cta-row">
+			<button type="submit" class="btn primary"><?php esc_html_e( 'Senden', 'katalyst' ); ?> <span class="arr">→</span></button>
+		</div>
+	</form>
+	<?php
+
+	return (string) ob_get_clean();
+}
+add_shortcode( 'katalyst_contact_form', 'katalyst_contact_form_shortcode' );

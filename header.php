@@ -13,4 +13,9 @@
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
-<?php get_template_part( 'template-parts/site', 'header' ); ?>
+<?php
+if ( function_exists( 'block_template_part' ) ) {
+	block_template_part( 'header' );
+} else {
+	get_template_part( 'template-parts/site', 'header' );
+}

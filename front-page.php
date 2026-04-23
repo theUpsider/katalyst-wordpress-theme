@@ -1,17 +1,18 @@
 <?php
 /**
- * Front page template.
+ * Front page fallback template.
  *
  * @package Katalyst
  */
 
 get_header();
-get_template_part( 'template-parts/sections/hero' );
-get_template_part( 'template-parts/sections/about' );
-get_template_part( 'template-parts/sections/pillars' );
-get_template_part( 'template-parts/sections/components' );
-get_template_part( 'template-parts/sections/research' );
-get_template_part( 'template-parts/sections/news' );
-get_template_part( 'template-parts/sections/partners' );
-get_template_part( 'template-parts/sections/contact' );
+?>
+<main class="page-shell page-shell--editor-front">
+	<?php if ( have_posts() ) : ?>
+		<?php while ( have_posts() ) : the_post(); ?>
+			<?php the_content(); ?>
+		<?php endwhile; ?>
+	<?php endif; ?>
+</main>
+<?php
 get_footer();
