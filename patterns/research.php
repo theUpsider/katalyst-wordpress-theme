@@ -4,6 +4,7 @@
  * Slug: katalyst/research
  * Categories: katalyst-sections, text
  * Description: Editable research questions section.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

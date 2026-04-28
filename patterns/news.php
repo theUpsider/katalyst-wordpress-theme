@@ -4,6 +4,7 @@
  * Slug: katalyst/news
  * Categories: katalyst-sections, query
  * Description: Dynamic news section powered by WordPress posts.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

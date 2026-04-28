@@ -4,6 +4,7 @@
  * Slug: katalyst/about
  * Categories: katalyst-sections, text
  * Description: Editable project introduction section.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

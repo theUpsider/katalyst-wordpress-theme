@@ -3,7 +3,8 @@
  * Title: Katalyst Contact
  * Slug: katalyst/contact
  * Categories: katalyst-sections, text
- * Description: Editable contact section with a dynamic contact form block.
+ * Description: Editable contact section with a contact form.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

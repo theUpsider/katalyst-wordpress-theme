@@ -4,6 +4,7 @@
  * Slug: katalyst/pillars
  * Categories: katalyst-sections, featured
  * Description: Editable three-pillar section.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

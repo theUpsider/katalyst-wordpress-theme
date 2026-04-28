@@ -4,6 +4,7 @@
  * Slug: katalyst/partners
  * Categories: katalyst-sections, featured
  * Description: Editable partner and funder section.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

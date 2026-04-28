@@ -4,6 +4,7 @@
  * Slug: katalyst/components
  * Categories: katalyst-sections, featured
  * Description: Editable six-card component grid.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

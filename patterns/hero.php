@@ -4,6 +4,7 @@
  * Slug: katalyst/hero
  * Categories: katalyst-sections, featured, banner
  * Description: Editable hero section with intro copy, CTAs, stats, and recent posts.
+ * Synced: false
  * Viewport Width: 1360
  */
 ?>

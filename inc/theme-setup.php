@@ -48,7 +48,7 @@ function katalyst_setup(): void {
 		)
 	);
 
-	add_editor_style( 'assets/css/theme.css' );
+	add_editor_style( 'assets/css/editor.css' );
 }
 add_action( 'after_setup_theme', 'katalyst_setup' );
 
@@ -195,3 +195,234 @@ function katalyst_contact_form_shortcode(): string {
 	return (string) ob_get_clean();
 }
 add_shortcode( 'katalyst_contact_form', 'katalyst_contact_form_shortcode' );
+
+define( 'KATALYST_SEED_VERSION', '1.2' );
+
+/**
+ * Run theme seeding on activation and on every request until the seed version
+ * matches, so existing installs get the same setup as fresh ones.
+ *
+ * Uses a versioned option flag so the seed only re-runs when the theme ships
+ * a new seed version, not on every page load.
+ * Only persists the version when seeding actually produced a usable nav post.
+ */
+function katalyst_maybe_seed(): void {
+	if ( get_option( 'katalyst_seed_version' ) === KATALYST_SEED_VERSION ) {
+		return;
+	}
+	katalyst_seed_front_page();
+	$nav_id  = katalyst_seed_navigation();
+	$wired   = $nav_id ? katalyst_seed_header_template_part( $nav_id ) : false;
+	if ( $nav_id && $wired ) {
+		update_option( 'katalyst_seed_version', KATALYST_SEED_VERSION );
+	}
+}
+add_action( 'after_switch_theme', 'katalyst_maybe_seed' );
+add_action( 'init', 'katalyst_maybe_seed' );
+
+/**
+ * Build expanded block HTML from pattern files.
+ */
+function katalyst_build_homepage_content(): string {
+	$patterns_dir = get_template_directory() . '/patterns/';
+	$order        = array( 'hero', 'about', 'pillars', 'components', 'research', 'news', 'partners', 'contact' );
+	$parts        = array();
+
+	foreach ( $order as $slug ) {
+		$file = $patterns_dir . $slug . '.php';
+		if ( ! file_exists( $file ) ) {
+			continue;
+		}
+		$raw     = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		$raw     = preg_replace( '/\<\?php.*?\?\>/s', '', $raw );
+		$parts[] = trim( $raw );
+	}
+
+	return implode( "\n\n", $parts );
+}
+
+/**
+ * Create or repair the static front page with inline block HTML.
+ * Only updates if the page still contains wp:pattern references (frozen content).
+ */
+function katalyst_seed_front_page(): void {
+	$content       = katalyst_build_homepage_content();
+	$front_page_id = (int) get_option( 'page_on_front' );
+
+	if ( $front_page_id ) {
+		$post = get_post( $front_page_id );
+		if ( $post && str_contains( $post->post_content, 'wp:pattern' ) ) {
+			wp_update_post( array(
+				'ID'           => $front_page_id,
+				'post_content' => $content,
+			) );
+		}
+		return;
+	}
+
+	if ( empty( $content ) ) {
+		return;
+	}
+
+	$page_id = wp_insert_post( array(
+		'post_title'   => 'Home',
+		'post_content' => $content,
+		'post_status'  => 'publish',
+		'post_type'    => 'page',
+	) );
+
+	if ( $page_id && ! is_wp_error( $page_id ) ) {
+		update_option( 'page_on_front', $page_id );
+		update_option( 'show_on_front', 'page' );
+	}
+}
+
+/**
+ * Create the primary navigation post with starter anchor links if none exists.
+ * Returns the wp_navigation post ID on success, 0 on failure.
+ *
+ * Does NOT mutate theme files. Navigation wiring is handled via a DB
+ * wp_template_part override in katalyst_seed_header_template_part().
+ */
+function katalyst_seed_navigation(): int {
+	$stored_id = (int) get_option( 'katalyst_nav_id' );
+	if ( $stored_id ) {
+		$post = get_post( $stored_id );
+		if ( $post && 'wp_navigation' === $post->post_type && 'publish' === $post->post_status ) {
+			return $stored_id;
+		}
+	}
+
+	$existing = get_posts( array(
+		'post_type'      => 'wp_navigation',
+		'post_status'    => 'publish',
+		'posts_per_page' => 1,
+		'title'          => 'Primary Navigation',
+	) );
+
+	$nav_content = implode( "\n", array(
+		'<!-- wp:navigation-link {"label":"Projekt","url":"/#projekt","kind":"custom","isTopLevelLink":true} /-->',
+		'<!-- wp:navigation-link {"label":"Plattform","url":"/#plattform","kind":"custom","isTopLevelLink":true} /-->',
+		'<!-- wp:navigation-link {"label":"Forschung","url":"/#forschung","kind":"custom","isTopLevelLink":true} /-->',
+		'<!-- wp:navigation-link {"label":"News","url":"/#news","kind":"custom","isTopLevelLink":true} /-->',
+		'<!-- wp:navigation-link {"label":"Kontakt","url":"/#kontakt","kind":"custom","isTopLevelLink":true} /-->',
+	) );
+
+	if ( ! empty( $existing ) ) {
+		$nav_id = $existing[0]->ID;
+		if ( str_contains( $existing[0]->post_content, 'wp:page-list' ) ) {
+			wp_update_post( array(
+				'ID'           => $nav_id,
+				'post_content' => $nav_content,
+			) );
+		}
+		update_option( 'katalyst_nav_id', $nav_id );
+		return $nav_id;
+	}
+
+	$nav_id = wp_insert_post( array(
+		'post_title'   => 'Primary Navigation',
+		'post_content' => $nav_content,
+		'post_status'  => 'publish',
+		'post_type'    => 'wp_navigation',
+	) );
+
+	if ( $nav_id && ! is_wp_error( $nav_id ) ) {
+		update_option( 'katalyst_nav_id', (int) $nav_id );
+		return (int) $nav_id;
+	}
+
+	return 0;
+}
+
+/**
+ * Create or update the header wp_template_part DB record so the navigation
+ * block references the correct wp_navigation post ID via `ref`.
+ *
+ * WordPress uses the DB record over the theme file when both exist.
+ * Area is registered via the wp_template_part_area taxonomy (core-native).
+ * Lookup is by post_name + wp_theme taxonomy to avoid duplicates.
+ *
+ * @param int $nav_id The wp_navigation post ID to wire into the header.
+ * @return bool True on success (record exists and has correct ref), false otherwise.
+ */
+function katalyst_seed_header_template_part( int $nav_id ): bool {
+	$theme     = get_stylesheet();
+	$nav_block = '<!-- wp:navigation {"ref":' . $nav_id . ',"overlayMenu":"mobile","className":"nav-menu","layout":{"type":"flex","justifyContent":"left","orientation":"horizontal"}} /-->';
+
+	$header_file  = get_template_directory() . '/parts/header.html';
+	$file_content = file_exists( $header_file )
+		? file_get_contents( $header_file ) // phpcs:ignore WordPress.WP.AlternativeFunctions
+		: '';
+
+	$new_content = (string) preg_replace(
+		'/<!--\s*wp:navigation\s*\{.*?\}\s*\/-->/s',
+		$nav_block,
+		$file_content
+	);
+	if ( ! $new_content || ! str_contains( $new_content, '"ref":' . $nav_id ) ) {
+		return false;
+	}
+
+	$existing = get_posts( array(
+		'post_type'      => 'wp_template_part',
+		'post_status'    => 'publish',
+		'posts_per_page' => 1,
+		'name'           => 'header',
+		'tax_query'      => array(
+			array(
+				'taxonomy' => 'wp_theme',
+				'field'    => 'slug',
+				'terms'    => $theme,
+			),
+		),
+	) );
+
+	if ( ! empty( $existing ) ) {
+		$part         = $existing[0];
+		$part_content = $part->post_content;
+
+		$area_terms = wp_get_object_terms( $part->ID, 'wp_template_part_area', array( 'fields' => 'slugs' ) );
+		$needs_area = is_wp_error( $area_terms ) || ! in_array( 'header', (array) $area_terms, true );
+		if ( $needs_area ) {
+			$area_fix = wp_set_object_terms( $part->ID, 'header', 'wp_template_part_area' );
+			if ( is_wp_error( $area_fix ) ) {
+				return false;
+			}
+		}
+
+		if ( str_contains( $part_content, '"ref":' . $nav_id ) ) {
+			return true;
+		}
+		$updated = (string) preg_replace(
+			'/<!--\s*wp:navigation\s*\{.*?\}\s*\/-->/s',
+			$nav_block,
+			$part_content
+		);
+		if ( $updated && $updated !== $part_content && str_contains( $updated, '"ref":' . $nav_id ) ) {
+			$result = wp_update_post( array(
+				'ID'           => $part->ID,
+				'post_content' => $updated,
+			) );
+			return $result && ! is_wp_error( $result );
+		}
+		return false;
+	}
+
+	$part_id = wp_insert_post( array(
+		'post_title'   => 'Header',
+		'post_name'    => 'header',
+		'post_content' => $new_content,
+		'post_status'  => 'publish',
+		'post_type'    => 'wp_template_part',
+	) );
+
+	if ( ! $part_id || is_wp_error( $part_id ) ) {
+		return false;
+	}
+
+	$theme_result = wp_set_object_terms( $part_id, $theme, 'wp_theme' );
+	$area_result  = wp_set_object_terms( $part_id, 'header', 'wp_template_part_area' );
+
+	return ! is_wp_error( $theme_result ) && ! is_wp_error( $area_result ) && str_contains( $new_content, '"ref":' . $nav_id );
+}
