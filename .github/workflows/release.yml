@@ -7,6 +7,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build theme zip
@@ -30,29 +33,36 @@ jobs:
       - name: Build zip
         run: |
           ZIP_NAME="${{ steps.version.outputs.zip_name }}"
-          # Build from repo root, exclude dev/CI artifacts
-          zip -r "${ZIP_NAME}" . \
-            --exclude ".git/*" \
-            --exclude ".github/*" \
-            --exclude ".gitignore" \
-            --exclude ".sisyphus/*" \
-            --exclude "AGENTS.md" \
-            --exclude "KATALYST Landing.html" \
-            --exclude "KATALYST Wireframes.html" \
-            --exclude "uploads/*" \
-            --exclude "tools/*" \
-            --exclude "*.zip"
+          THEME_DIR="katalyst"
+
+          mkdir -p "${THEME_DIR}"
+          rsync -a \
+            --exclude=".git" \
+            --exclude=".github" \
+            --exclude=".gitignore" \
+            --exclude=".sisyphus" \
+            --exclude="AGENTS.md" \
+            --exclude="KATALYST Landing.html" \
+            --exclude="KATALYST Wireframes.html" \
+            --exclude="uploads" \
+            --exclude="tools" \
+            --exclude="reseed-homepage.php" \
+            --exclude="${THEME_DIR}" \
+            --exclude="*.zip" \
+            . "${THEME_DIR}/"
+
+          zip -r "${ZIP_NAME}" "${THEME_DIR}"
           echo "Built: ${ZIP_NAME}"
-          unzip -l "${ZIP_NAME}" | tail -5
+          echo "--- Top-level entries in zip ---"
+          unzip -l "${ZIP_NAME}" | grep -E "^\s+[0-9]" | head -20
 
       - name: Upload artifact (every push)
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.version.outputs.zip_name }}
           path: ${{ steps.version.outputs.zip_name }}
-          retention-days: 30
+          retention-days: 90
 
-      # ── Release (tags only) ──────────────────────────────────────────
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
