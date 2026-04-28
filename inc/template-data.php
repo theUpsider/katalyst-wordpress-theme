@@ -23,7 +23,6 @@ function katalyst_get_theme_data(): array {
 			array( 'label' => __( 'Forschung', 'katalyst' ), 'anchor' => 'forschung' ),
 			array( 'label' => __( 'News', 'katalyst' ), 'anchor' => 'news' ),
 			array( 'label' => __( 'Partner', 'katalyst' ), 'anchor' => 'partner' ),
-			array( 'label' => __( 'Kontakt', 'katalyst' ), 'anchor' => 'kontakt' ),
 		),
 		'hero'       => array(
 			'eyebrow' => __( 'Forschungsprojekt · Hochschule Kempten · 2025 – 2028', 'katalyst' ),
@@ -78,15 +77,6 @@ function katalyst_get_theme_data(): array {
 			),
 		),
 		'partners'   => array( 'HS Kempten', __( 'Partner-Logo', 'katalyst' ), __( 'Partner-Logo', 'katalyst' ), __( 'Partner-Logo', 'katalyst' ), __( 'Partner-Logo', 'katalyst' ) ),
-		'contact'    => array(
-			'lead'  => __( 'Austausch, Adoption, Presse — wir freuen uns auf Ihre Nachricht.', 'katalyst' ),
-			'lines' => array(
-				array( 'marker' => 'b', 'text' => 'projekt@katalyst-education.de', 'label' => __( 'Allgemein', 'katalyst' ) ),
-				array( 'marker' => 'g', 'text' => 'adoption@katalyst-education.de', 'label' => __( 'Hochschulen', 'katalyst' ) ),
-				array( 'marker' => 'n', 'text' => 'presse@katalyst-education.de', 'label' => __( 'Presse', 'katalyst' ) ),
-				array( 'marker' => 'b', 'text' => __( 'Hochschule Kempten · Bahnhofstr. 61 · 87435 Kempten', 'katalyst' ), 'label' => __( 'Adresse', 'katalyst' ) ),
-			),
-		),
 		'footer'     => array(
 			'text'  => __( 'Hochschullehre mit generativer KI. Nutzbar, fair, zukunftsfähig. Ein Forschungsprojekt der Hochschule Kempten.', 'katalyst' ),
 			'legal' => array( __( 'Impressum', 'katalyst' ), __( 'Datenschutz', 'katalyst' ), __( 'Barrierefreiheit', 'katalyst' ) ),

@@ -32,7 +32,6 @@ $nav    = katalyst_data( 'nav' );
 				<h5><?php esc_html_e( 'Kontakt', 'katalyst' ); ?></h5>
 				<a href="mailto:projekt@katalyst-education.de">projekt@katalyst-education.de</a>
 				<a href="https://stiftung-hochschullehre.de/" target="_blank" rel="noopener"><?php esc_html_e( 'Förderung ↗', 'katalyst' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/#kontakt' ) ); ?>"><?php esc_html_e( 'Presse', 'katalyst' ); ?></a>
 			</div>
 		</div>
 		<div class="foot-bottom">

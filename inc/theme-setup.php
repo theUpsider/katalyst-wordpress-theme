@@ -110,80 +110,7 @@ function katalyst_body_classes( array $classes ): array {
 }
 add_filter( 'body_class', 'katalyst_body_classes' );
 
-/**
- * Handle the contact form submission.
- */
-function katalyst_handle_contact_form(): void {
-	if ( ! isset( $_POST['katalyst_contact_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['katalyst_contact_nonce'] ) ), 'katalyst_contact_form' ) ) {
-		wp_safe_redirect( add_query_arg( 'contact-status', 'invalid', wp_get_referer() ?: home_url( '/' ) ) . '#kontakt' );
-		exit;
-	}
-
-	$name         = isset( $_POST['contact_name'] ) ? sanitize_text_field( wp_unslash( $_POST['contact_name'] ) ) : '';
-	$email        = isset( $_POST['contact_email'] ) ? sanitize_email( wp_unslash( $_POST['contact_email'] ) ) : '';
-	$organization = isset( $_POST['contact_organization'] ) ? sanitize_text_field( wp_unslash( $_POST['contact_organization'] ) ) : '';
-	$message      = isset( $_POST['contact_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['contact_message'] ) ) : '';
-
-	$status = 'error';
-
-	if ( $name && is_email( $email ) && $message ) {
-		$result = katalyst_save_inquiry( $name, $email, $organization, $message );
-		$status = ( ! is_wp_error( $result ) && $result > 0 ) ? 'success' : 'error';
-	}
-
-	wp_safe_redirect( add_query_arg( 'contact-status', $status, wp_get_referer() ?: home_url( '/' ) ) . '#kontakt' );
-	exit;
-}
-add_action( 'admin_post_nopriv_katalyst_contact', 'katalyst_handle_contact_form' );
-add_action( 'admin_post_katalyst_contact', 'katalyst_handle_contact_form' );
-
-/**
- * Render the contact form shortcode.
- *
- * @return string
- */
-function katalyst_contact_form_shortcode(): string {
-	$status = function_exists( 'katalyst_get_contact_status' ) ? katalyst_get_contact_status() : '';
-
-	ob_start();
-	?>
-	<form class="form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-		<?php if ( 'success' === $status ) : ?>
-			<div class="notice-banner success"><?php esc_html_e( 'Danke. Ihre Nachricht wurde gesendet.', 'katalyst' ); ?></div>
-		<?php elseif ( 'error' === $status || 'invalid' === $status ) : ?>
-			<div class="notice-banner error"><?php esc_html_e( 'Bitte prüfen Sie Ihre Angaben und versuchen Sie es erneut.', 'katalyst' ); ?></div>
-		<?php endif; ?>
-		<input type="hidden" name="action" value="katalyst_contact">
-		<?php wp_nonce_field( 'katalyst_contact_form', 'katalyst_contact_nonce' ); ?>
-		<div class="row">
-			<div>
-				<label for="contact_name"><?php esc_html_e( 'Name', 'katalyst' ); ?></label>
-				<input id="contact_name" name="contact_name" type="text" required>
-			</div>
-			<div>
-				<label for="contact_email"><?php esc_html_e( 'E-Mail', 'katalyst' ); ?></label>
-				<input id="contact_email" name="contact_email" type="email" required>
-			</div>
-		</div>
-		<div>
-			<label for="contact_organization"><?php esc_html_e( 'Organisation (optional)', 'katalyst' ); ?></label>
-			<input id="contact_organization" name="contact_organization" type="text">
-		</div>
-		<div style="margin-top:14px;">
-			<label for="contact_message"><?php esc_html_e( 'Nachricht', 'katalyst' ); ?></label>
-			<textarea id="contact_message" name="contact_message" required></textarea>
-		</div>
-		<div class="cta-row">
-			<button type="submit" class="btn primary"><?php esc_html_e( 'Senden', 'katalyst' ); ?> <span class="arr">→</span></button>
-		</div>
-	</form>
-	<?php
-
-	return (string) ob_get_clean();
-}
-add_shortcode( 'katalyst_contact_form', 'katalyst_contact_form_shortcode' );
-
-define( 'KATALYST_SEED_VERSION', '1.3' );
+define( 'KATALYST_SEED_VERSION', '1.4' );
 
 /**
  * Run theme seeding on activation and on every request until the seed version
@@ -212,7 +139,7 @@ add_action( 'init', 'katalyst_maybe_seed' );
  */
 function katalyst_build_homepage_content(): string {
 	$patterns_dir = get_template_directory() . '/patterns/';
-	$order        = array( 'hero', 'about', 'pillars', 'components', 'research', 'news', 'partners', 'contact' );
+	$order        = array( 'hero', 'about', 'pillars', 'components', 'research', 'news', 'partners' );
 	$parts        = array();
 
 	foreach ( $order as $slug ) {
@@ -289,7 +216,7 @@ function katalyst_seed_navigation(): int {
 		'<!-- wp:navigation-link {"label":"Plattform","url":"/#plattform","kind":"custom","isTopLevelLink":true} /-->',
 		'<!-- wp:navigation-link {"label":"Forschung","url":"/#forschung","kind":"custom","isTopLevelLink":true} /-->',
 		'<!-- wp:navigation-link {"label":"News","url":"/#news","kind":"custom","isTopLevelLink":true} /-->',
-		'<!-- wp:navigation-link {"label":"Kontakt","url":"/#kontakt","kind":"custom","isTopLevelLink":true} /-->',
+		'<!-- wp:navigation-link {"label":"Partner","url":"/#partner","kind":"custom","isTopLevelLink":true} /-->',
 	) );
 
 	if ( ! empty( $existing ) ) {

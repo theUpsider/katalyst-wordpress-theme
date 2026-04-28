@@ -23,7 +23,6 @@ $nav_items = katalyst_get_navigation_items();
 		</nav>
 		<div class="nav-right">
 			<div class="lang" aria-hidden="true"><span class="on">DE</span><span>EN</span></div>
-			<a href="<?php echo esc_url( home_url( '/#kontakt' ) ); ?>" class="btn primary"><?php esc_html_e( 'Kontakt', 'katalyst' ); ?> <span class="arr">→</span></a>
 		</div>
 	</div>
 </header>
