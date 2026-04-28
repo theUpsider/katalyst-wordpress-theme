@@ -127,21 +127,8 @@ function katalyst_handle_contact_form(): void {
 	$status = 'error';
 
 	if ( $name && is_email( $email ) && $message ) {
-		$admin_email = get_option( 'admin_email' );
-		$subject     = sprintf( __( '[Katalyst] New inquiry from %s', 'katalyst' ), $name );
-		$body        = implode(
-			"\n\n",
-			array(
-				sprintf( __( 'Name: %s', 'katalyst' ), $name ),
-				sprintf( __( 'Email: %s', 'katalyst' ), $email ),
-				sprintf( __( 'Organization: %s', 'katalyst' ), $organization ?: __( 'Not provided', 'katalyst' ) ),
-				__( 'Message:', 'katalyst' ),
-				$message,
-			)
-		);
-
-		$headers = array( 'Reply-To: ' . $name . ' <' . $email . '>' );
-		$status  = wp_mail( $admin_email, $subject, $body, $headers ) ? 'success' : 'error';
+		$result = katalyst_save_inquiry( $name, $email, $organization, $message );
+		$status = ( ! is_wp_error( $result ) && $result > 0 ) ? 'success' : 'error';
 	}
 
 	wp_safe_redirect( add_query_arg( 'contact-status', $status, wp_get_referer() ?: home_url( '/' ) ) . '#kontakt' );

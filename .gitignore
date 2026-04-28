@@ -1,0 +1,21 @@
+# Dev / AI artifacts
+.sisyphus/
+AGENTS.md
+KATALYST\ Landing.html
+KATALYST\ Wireframes.html
+
+# Uploads folder (local only)
+uploads/
+
+# Empty tools dir
+tools/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
