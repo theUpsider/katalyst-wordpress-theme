@@ -179,6 +179,44 @@ function katalyst_get_news_data( int $limit = 7 ): array {
 }
 
 /**
+ * Render the hero feed widget (chip filter + feed items).
+ *
+ * Used via [katalyst_hero_feed] shortcode so the seeded block page can include
+ * dynamic, server-side rendered output inside a wp:shortcode block.
+ *
+ * @return string HTML output.
+ */
+function katalyst_hero_feed_shortcode(): string {
+	$feed = katalyst_get_feed_items();
+	ob_start();
+	?>
+	<div class="filter" role="tablist">
+		<button class="chip on" data-f="all">alle</button>
+		<button class="chip" data-f="news">news</button>
+		<button class="chip" data-f="blog">blog</button>
+		<button class="chip" data-f="event">events</button>
+		<button class="chip" data-f="publ">publikationen</button>
+	</div>
+	<div class="feed-items">
+		<?php foreach ( $feed as $item ) : ?>
+			<a class="feed-item<?php echo ! empty( $item['featured'] ) ? ' feat' : ''; ?>"
+			   data-cat="<?php echo esc_attr( $item['type'] ); ?>"
+			   href="<?php echo esc_url( $item['url'] ); ?>">
+				<div class="d"><span class="day"><?php echo esc_html( $item['day'] ); ?></span><?php echo esc_html( $item['month'] ); ?></div>
+				<div>
+					<div class="type <?php echo esc_attr( $item['type'] ); ?>"><span class="tk"></span><?php echo esc_html( $item['type'] ); ?></div>
+					<div class="t"><?php echo esc_html( $item['title'] ); ?></div>
+				</div>
+				<div class="arr">→</div>
+			</a>
+		<?php endforeach; ?>
+	</div>
+	<?php
+	return (string) ob_get_clean();
+}
+add_shortcode( 'katalyst_hero_feed', 'katalyst_hero_feed_shortcode' );
+
+/**
  * Check contact response status.
  */
 function katalyst_get_contact_status(): string {

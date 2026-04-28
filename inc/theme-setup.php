@@ -196,7 +196,7 @@ function katalyst_contact_form_shortcode(): string {
 }
 add_shortcode( 'katalyst_contact_form', 'katalyst_contact_form_shortcode' );
 
-define( 'KATALYST_SEED_VERSION', '1.2' );
+define( 'KATALYST_SEED_VERSION', '1.3' );
 
 /**
  * Run theme seeding on activation and on every request until the seed version
@@ -250,13 +250,10 @@ function katalyst_seed_front_page(): void {
 	$front_page_id = (int) get_option( 'page_on_front' );
 
 	if ( $front_page_id ) {
-		$post = get_post( $front_page_id );
-		if ( $post && str_contains( $post->post_content, 'wp:pattern' ) ) {
-			wp_update_post( array(
-				'ID'           => $front_page_id,
-				'post_content' => $content,
-			) );
-		}
+		wp_update_post( array(
+			'ID'           => $front_page_id,
+			'post_content' => $content,
+		) );
 		return;
 	}
 

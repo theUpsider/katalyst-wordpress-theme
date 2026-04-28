@@ -61,7 +61,7 @@
 				<div class="wp-block-group feed-head"><!-- wp:html --><span class="pulse"></span><!-- /wp:html --><!-- wp:paragraph {"className":"title"} --><p class="title">Aus dem Projekt</p><!-- /wp:paragraph --><!-- wp:paragraph {"className":"tag"} --><p class="tag">live</p><!-- /wp:paragraph --></div>
 				<!-- /wp:group -->
 
-				<!-- wp:latest-posts {"postsToShow":4,"displayPostDate":true,"className":"feed-list"} /-->
+				<!-- wp:shortcode -->[katalyst_hero_feed]<!-- /wp:shortcode -->
 			</div>
 			<!-- /wp:group -->
 		</div>
