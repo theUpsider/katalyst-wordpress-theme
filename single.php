@@ -9,7 +9,7 @@ get_header();
 ?>
 <main class="page-shell page-shell--single">
 	<?php while ( have_posts() ) : the_post(); ?>
-		<article <?php post_class( 'entry-shell reveal-up' ); ?>>
+		<article <?php post_class( 'entry-shell' ); ?>>
 			<p class="mono"><?php echo esc_html( get_the_date() ); ?></p>
 			<h1 class="entry-title"><?php the_title(); ?></h1>
 			<div class="entry-meta"><?php echo esc_html( get_the_author() ); ?></div>
