@@ -33,25 +33,9 @@ jobs:
       - name: Build zip
         run: |
           ZIP_NAME="${{ steps.version.outputs.zip_name }}"
-          THEME_DIR="katalyst"
 
-          mkdir -p "${THEME_DIR}"
-          rsync -a \
-            --exclude=".git" \
-            --exclude=".github" \
-            --exclude=".gitignore" \
-            --exclude=".sisyphus" \
-            --exclude="AGENTS.md" \
-            --exclude="KATALYST Landing.html" \
-            --exclude="KATALYST Wireframes.html" \
-            --exclude="uploads" \
-            --exclude="tools" \
-            --exclude="reseed-homepage.php" \
-            --exclude="${THEME_DIR}" \
-            --exclude="*.zip" \
-            . "${THEME_DIR}/"
-
-          zip -r "${ZIP_NAME}" "${THEME_DIR}"
+          make build
+          mv dist/katalyst.zip "${ZIP_NAME}"
           echo "Built: ${ZIP_NAME}"
           echo "--- Top-level entries in zip ---"
           unzip -l "${ZIP_NAME}" | grep -E "^\s+[0-9]" | head -20
