@@ -93,13 +93,16 @@ function katalyst_get_feed_items( int $limit = 4 ): array {
 	);
 
 	foreach ( $posts as $index => $post ) {
-		$terms = get_the_category( $post->ID );
-		$type  = $terms ? strtolower( $terms[0]->name ) : 'news';
+		$categories = get_the_category( $post->ID );
+		$tags       = get_the_tags( $post->ID );
+		$type       = $categories ? strtolower( $categories[0]->name ) : 'news';
+		$tag_names  = $tags ? wp_list_pluck( $tags, 'name' ) : array();
 
 		$items[] = array(
 			'day'      => get_the_date( 'd', $post ),
 			'month'    => get_the_date( 'M · y', $post ),
 			'type'     => $type,
+			'tags'     => $tag_names,
 			'title'    => get_the_title( $post ),
 			'url'      => get_permalink( $post ),
 			'featured' => 0 === $index,
@@ -116,6 +119,8 @@ function katalyst_get_feed_items( int $limit = 4 ): array {
 		static function ( array $item, int $index ): array {
 			$item['url']      = home_url( '/blog/' );
 			$item['featured'] = 0 === $index;
+			$filter_tags      = array( 'event' => 'events', 'publ' => 'publikationen' );
+			$item['tags']     = array( $filter_tags[ $item['type'] ] ?? $item['type'] );
 
 			return $item;
 		},
@@ -194,13 +199,13 @@ function katalyst_hero_feed_shortcode(): string {
 		<button class="chip on" data-f="all">alle</button>
 		<button class="chip" data-f="news">news</button>
 		<button class="chip" data-f="blog">blog</button>
-		<button class="chip" data-f="event">events</button>
-		<button class="chip" data-f="publ">publikationen</button>
+		<button class="chip" data-f="events">events</button>
+		<button class="chip" data-f="publikationen">publikationen</button>
 	</div>
 	<div class="feed-items">
 		<?php foreach ( $feed as $item ) : ?>
 			<a class="feed-item<?php echo ! empty( $item['featured'] ) ? ' feat' : ''; ?>"
-			   data-cat="<?php echo esc_attr( $item['type'] ); ?>"
+			   data-tags="<?php echo esc_attr( wp_json_encode( $item['tags'] ?? array() ) ); ?>"
 			   href="<?php echo esc_url( $item['url'] ); ?>">
 				<div class="d"><span class="day"><?php echo esc_html( $item['day'] ); ?></span><?php echo esc_html( $item['month'] ); ?></div>
 				<div>

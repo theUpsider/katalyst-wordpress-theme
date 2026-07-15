@@ -16,9 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     chip.addEventListener('click', () => {
       chips.forEach((button) => button.classList.remove('on'));
       chip.classList.add('on');
-      const filter = chip.dataset.f;
+      const filter = (chip.dataset.f || '').toLocaleLowerCase('de-DE');
       items.forEach((item) => {
-        const show = filter === 'all' || item.dataset.cat === filter;
+        const tags = JSON.parse(item.dataset.tags || '[]');
+        const show = filter === 'all' || tags.some(
+          (tag) => String(tag).toLocaleLowerCase('de-DE') === filter,
+        );
         item.style.display = show ? '' : 'none';
       });
     });
